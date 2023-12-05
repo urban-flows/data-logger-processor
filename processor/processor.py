@@ -15,6 +15,7 @@ frequency_30 = ['0012']
 frequency_300 = ['0810', '0001', '0002', '0003', '0004', '0005', '0006', '0007', '0008', '0009', '0010', '0013', '0014', '0015']
 frequency_900 = ['0011']
 
+columns = ['Station ID', 'Sensor ID', 'Date', 'Time', 'Measurements']
 
 class DataLoggerProcessor:
     def __init__(self):
@@ -31,7 +32,6 @@ class DataLoggerProcessor:
         return [paths[0]]
 
     def move_files(self):
-        columns = ['Station ID', 'Sensor ID', 'Date', 'Time', 'Measurements']
         for file in self.list_files_from_today():
             df = pd.read_csv(file, names=columns, header=None, dtype=str)
             output_path_sensor = str(Path(self.today_output_directory) / df.iloc[0, 0])
