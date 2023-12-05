@@ -35,8 +35,8 @@ class DataLoggerProcessor:
         return [paths[0]]
 
     def move_files(self):
-        for file in self.list_files_from_today():
-            df, station_id = self.read_pivot_dataframe(file)
+        files = (self.read_pivot_dataframe(filename) for filename in self.list_files_from_today())
+        for df, station_id in files:
             output_path_sensor = str(Path(self.today_output_directory) / station_id)
             for frequency in frequencies:
                 file_name = output_path_sensor + '_' + frequency
@@ -49,6 +49,7 @@ class DataLoggerProcessor:
         station_id = df.iloc[0, 0]
         df['datetime'] = pd.to_datetime(df['Date'] + df['Time'], format='%Y%m%d%H%M%S')
         df_pivot = df.pivot(index='datetime', columns='Sensor ID', values='Measurements')
+
         return df_pivot, station_id
 
     @staticmethod
