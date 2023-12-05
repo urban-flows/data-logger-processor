@@ -2,8 +2,7 @@ import glob
 import os
 from datetime import date
 from pathlib import Path
-
-import pandas as pd
+from processor import station_data_processor
 
 root_path = os.getenv("DATA_ROOT_PATH")
 output_path = os.getenv("OUTPUT_PATH")
@@ -59,5 +58,9 @@ class DataLoggerProcessor:
 
 
 if __name__ == "__main__":
-    data = DataLoggerProcessor()
-    data.move_files()
+    today_input_directory = Path(root_path) / str(today).replace("-", r"/")
+    paths = glob.glob(str(today_input_directory / "*"))
+    for path in paths:
+        processor = station_data_processor.StationDataProcessor(path)
+        processor.process_file()
+
