@@ -31,7 +31,8 @@ class DataLoggerProcessor:
         columns = ['Station ID', 'Sensor ID', 'Date', 'Time', 'Measurements']
         for file in self.list_files_from_today():
             df = pd.read_csv(file, names=columns, header=None, dtype=str)
-            output_path_sensor = str(Path(output_path) / df.iloc[0,0])
+            output_path_sensor = str(Path(self.today_output_directory) / df.iloc[0, 0])
+
             df['datetime'] = pd.to_datetime(df['Date'] + df['Time'], format='%Y%m%d%H%M%S')
             df_pivot = df.pivot(index='datetime', columns='Sensor ID', values='Measurements')
             df_pivot[frequency_30].dropna(how='all').to_csv(output_path_sensor + '_30_seconds')
