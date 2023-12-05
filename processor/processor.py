@@ -1,11 +1,14 @@
 import glob
+import os
 from datetime import date
 from pathlib import Path
 
 import pandas as pd
 
-root_path = r'C:\Users\cs1xcw\PycharmProjects\data-logger-processor\dummy_data'
-output_path = r'C:\Users\cs1xcw\PycharmProjects\data-logger-processor\dummy_results'
+root_path = os.getenv("DATA_ROOT_PATH")
+output_path = os.getenv("OUTPUT_PATH")
+text_file_path = os.getenv("FILES_EDITED_PATH")
+
 today = "2021-08-17"
 
 frequency_30 = ['0012']
@@ -38,6 +41,9 @@ class DataLoggerProcessor:
             df_pivot[frequency_30].dropna(how='all').to_csv(output_path_sensor + '_30_seconds')
             df_pivot[frequency_300].dropna(how='all').to_csv(output_path_sensor + '_300_seconds')
             df_pivot[frequency_900].dropna(how='all').to_csv(output_path_sensor + '_900_seconds')
+
+    def append_to_text(self):
+
 
 
 if __name__ == "__main__":
