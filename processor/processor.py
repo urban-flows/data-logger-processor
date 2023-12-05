@@ -42,8 +42,10 @@ class DataLoggerProcessor:
             df_pivot[frequency_300].dropna(how='all').to_csv(output_path_sensor + '_300_seconds')
             df_pivot[frequency_900].dropna(how='all').to_csv(output_path_sensor + '_900_seconds')
 
-    def append_to_text(self):
-
+    @staticmethod
+    def write_to_tracking_file(file_name):
+        with open(text_file_path, 'a') as file:
+            file.write(file_name + "\n")
 
 
 if __name__ == "__main__":
