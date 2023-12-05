@@ -31,12 +31,12 @@ class DataLoggerProcessor:
         columns = ['Station ID', 'Sensor ID', 'Date', 'Time', 'Measurements']
         for file in self.list_files_from_today():
             df = pd.read_csv(file, names=columns, header=None, dtype=str)
-            output_path_sensor = output_path + df.iloc[0,0]
+            output_path_sensor = str(Path(output_path) / df.iloc[0,0])
             df['datetime'] = pd.to_datetime(df['Date'] + df['Time'], format='%Y%m%d%H%M%S')
             df_pivot = df.pivot(index='datetime', columns='Sensor ID', values='Measurements')
-            df_pivot[frequency_30].dropna(how='all').to_csv(output_path_sensor + '30_seconds')
-            df_pivot[frequency_300].dropna(how='all').to_csv(output_path_sensor + '300_seconds')
-            df_pivot[frequency_900].dropna(how='all').to_csv(output_path_sensor + '900_seconds')
+            df_pivot[frequency_30].dropna(how='all').to_csv(output_path_sensor + '_30_seconds')
+            df_pivot[frequency_300].dropna(how='all').to_csv(output_path_sensor + '_300_seconds')
+            df_pivot[frequency_900].dropna(how='all').to_csv(output_path_sensor + '_900_seconds')
 
 
 if __name__ == "__main__":
