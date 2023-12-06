@@ -1,4 +1,5 @@
 import os
+import time
 from pathlib import Path
 
 import pandas as pd
@@ -39,7 +40,9 @@ class StationDataProcessor:
         df = pd.read_csv(self.filename, names=columns, header=None, dtype=str)
         self.station_id = df.iloc[0, 0]
         df['datetime'] = pd.to_datetime(df['Date'] + df['Time'], format='%Y%m%d%H%M%S')
-        self.df = df.pivot(index='datetime', columns='Sensor ID', values='Measurements')
+        f = lambda x: int(x.timestamp())
+        df['unix_timestamp'] = df['datetime'].map(f)
+        self.df = df.pivot(index='unix_timestamp', columns='Sensor ID', values='Measurements')
 
     def _get_datetime_from_df(self):
         self.file_start_time = self.df.index[0]
