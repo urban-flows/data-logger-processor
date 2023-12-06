@@ -23,7 +23,8 @@ class StationDataProcessor:
         self.today_output_directory = Path(output_path) / str(today).replace("-", r"/")
         self.today_output_directory.mkdir(parents=True, exist_ok=True)
         self.station_id = None
-        self.df_pivot = None
+        self.df = None
+        self.file_start_time = None
 
     def process_file(self):
         self._read_pivot_file()
@@ -31,14 +32,14 @@ class StationDataProcessor:
         output_path_sensor = str(Path(self.today_output_directory) / self.station_id)
         for frequency in frequencies:
             frequency_file_name = output_path_sensor + '_' + frequency
-            self.df_pivot[frequencies[frequency]].dropna(how='all').to_csv(frequency_file_name)
+            self.df[frequencies[frequency]].dropna(how='all').to_csv(frequency_file_name)
             self.write_to_tracking_file(frequency_file_name)
 
     def _read_pivot_file(self):
         df = pd.read_csv(self.filename, names=columns, header=None, dtype=str)
         self.station_id = df.iloc[0, 0]
         df['datetime'] = pd.to_datetime(df['Date'] + df['Time'], format='%Y%m%d%H%M%S')
-        self.df_pivot = df.pivot(index='datetime', columns='Sensor ID', values='Measurements')
+        self.df = df.pivot(index='datetime', columns='Sensor ID', values='Measurements')
 
     def _get_datetime_from_df(self):
         self.file_start_time = self.df.iloc[0, 0]
