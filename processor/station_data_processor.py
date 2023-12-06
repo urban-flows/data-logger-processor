@@ -27,6 +27,7 @@ class StationDataProcessor:
 
     def process_file(self):
         self._read_pivot_file()
+        self._get_datetime_from_df()
         output_path_sensor = str(Path(self.today_output_directory) / self.station_id)
         for frequency in frequencies:
             frequency_file_name = output_path_sensor + '_' + frequency
@@ -38,6 +39,9 @@ class StationDataProcessor:
         self.station_id = df.iloc[0, 0]
         df['datetime'] = pd.to_datetime(df['Date'] + df['Time'], format='%Y%m%d%H%M%S')
         self.df_pivot = df.pivot(index='datetime', columns='Sensor ID', values='Measurements')
+
+    def _get_datetime_from_df(self):
+        self.file_start_time = self.df.iloc[0, 0]
 
     @staticmethod
     def write_to_tracking_file(filename: str):
