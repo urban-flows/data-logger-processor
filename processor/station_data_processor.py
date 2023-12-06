@@ -20,8 +20,7 @@ frequencies = {
 class StationDataProcessor:
     def __init__(self, filename: str):
         self.filename = filename
-        self.today_output_directory = Path(output_path) / str(today).replace("-", r"/")
-        self.today_output_directory.mkdir(parents=True, exist_ok=True)
+        self.today_output_directory = None
         self.station_id = None
         self.df = None
         self.file_start_time = None
@@ -29,6 +28,7 @@ class StationDataProcessor:
     def process_file(self):
         self._read_pivot_file()
         self._get_datetime_from_df()
+        self._set_and_create_output_dir()
         output_path_sensor = str(Path(self.today_output_directory) / self.station_id)
         for frequency in frequencies:
             frequency_file_name = output_path_sensor + '_' + frequency
@@ -42,7 +42,11 @@ class StationDataProcessor:
         self.df = df.pivot(index='datetime', columns='Sensor ID', values='Measurements')
 
     def _get_datetime_from_df(self):
-        self.file_start_time = self.df.iloc[0, 0]
+        self.file_start_time = self.df.index[0]
+
+    def _set_and_create_output_dir(self):
+        self.today_output_directory = Path(output_path) / str(self.file_start_time.year) / str(self.file_start_time.month) / str(self.file_start_time.day)
+        self.today_output_directory.mkdir(parents=True, exist_ok=True)
 
     @staticmethod
     def write_to_tracking_file(filename: str):
