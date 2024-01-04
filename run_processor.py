@@ -7,6 +7,7 @@ root_path = os.getenv("DATA_ROOT_PATH")
 text_file_path = os.getenv("FILES_EDITED_PATH")
 today = "2021-08-17"
 
+
 def get_today_files_not_processed():
     today_input_directory = Path(root_path) / str(today).replace("-", r"/")
 
@@ -22,6 +23,7 @@ def get_today_files_not_processed():
 
 
 if __name__ == "__main__":
+
     today_input_directory = Path(root_path) / str(today).replace("-", r"/")
     paths = glob.glob(str(today_input_directory / "*"))
     for path in paths:

@@ -28,7 +28,6 @@ class StationDataProcessor:
 
     def process_file(self):
         self._read_pivot_file()
-        self._get_datetime_from_df()
         self._set_and_create_output_dir()
         output_path_sensor = str(Path(self.today_output_directory) / self.station_id)
         for frequency in frequencies:
@@ -41,11 +40,9 @@ class StationDataProcessor:
         self.station_id = df.iloc[0, 0]
         df['datetime'] = pd.to_datetime(df['Date'] + df['Time'], format='%Y%m%d%H%M%S')
         f = lambda x: int(x.timestamp())
+        self.file_start_time = df.loc[0, 'datetime']
         df['unix_timestamp'] = df['datetime'].map(f)
         self.df = df.pivot(index='unix_timestamp', columns='Sensor ID', values='Measurements')
-
-    def _get_datetime_from_df(self):
-        self.file_start_time = self.df.index[0]
 
     def _set_and_create_output_dir(self):
         self.today_output_directory = Path(output_path) / str(self.file_start_time.year) / str(self.file_start_time.month) / str(self.file_start_time.day)
