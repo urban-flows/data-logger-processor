@@ -6,19 +6,20 @@ from datetime import datetime
 root_path = os.getenv("DATA_ROOT_PATH")
 text_file_path = os.getenv("FILES_EDITED_PATH")
 today = "2021-08-17"
-checked_files_path = os.getenv("CHECKED_FILES_PATH")
+checked_files_path = os.getenv("FILES_CHECKED_PATH")
 
-def get_today_files_not_processed():
+
+def get_today_files_not_processed(files_processed: list[str]):
     today_input_directory = Path(root_path) / str(today).replace("-", r"/")
 
-    with open(text_file_path, 'r') as file:
-        files_processed = []
-        for line in file:
-            line_stripped = line.rstrip("\n")
-            files_processed.append(line_stripped)
-
-    files = glob.glob(str(today_input_directory / "*"))
-    files_not_processed = set(files) - set(files_processed)
+    # with open(text_file_path, 'r') as file:
+    #     files_processed = []
+    #     for line in file:
+    #         line_stripped = line.rstrip("\n")
+    #         files_processed.append(line_stripped)
+    #
+    files_all = glob.glob(str(today_input_directory / "*"))
+    files_not_processed = set(files_all) - set(files_processed)
     return list(files_not_processed)
 
 
@@ -44,8 +45,16 @@ def check_tracking_file(file_path: Path):
         file.write(str(datetime.now().date()))
 
 
+def set_files_processed(file_path: Path, processed_files: list[str]):
+    with file_path.open("a") as file:
+        for processed_file in processed_files:
+            file.write(processed_file + "\n")
+
+
 if __name__ == "__main__":
-    check_tracking_file(Path(checked_files_path))
+    files_processed = check_tracking_file(Path(checked_files_path))
+    files_not_processed = get_today_files_not_processed(files_processed)
+    set_files_processed(Path(checked_files_path), files_not_processed)
     # today_input_directory = Path(root_path) / str(today).replace("-", r"/")
     # paths = glob.glob(str(today_input_directory / "*"))
     # for path in paths:
