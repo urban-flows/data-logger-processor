@@ -33,12 +33,12 @@ def check_tracking_file(file_path: Path):
             except ValueError:
                 print("First line of file was not the correct date format")
                 raise
-        if date != datetime.now().date():
-            file_path.rename(Path(str(file_path) + ".old"))
-            return files
-        else:
-            files = file.read()
-            return files
+            if date != datetime.now().date():
+                file_path.rename(Path(str(file_path) + ".old"))
+                return files
+            else:
+                files = file.read()
+                return files
 
     with file_path.open("w") as file:
         file.write(str(datetime.now().date()))
