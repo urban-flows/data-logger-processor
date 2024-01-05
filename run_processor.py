@@ -24,6 +24,7 @@ def get_today_files_not_processed():
 
 def check_tracking_file(file_path: Path):
     date_format = "%Y-%m-%d"
+    files = []
     if file_path.is_file():
         with file_path.open("r") as file:
             date = file.readline()
@@ -34,8 +35,10 @@ def check_tracking_file(file_path: Path):
                 raise
         if date != datetime.now().date():
             file_path.rename(Path(str(file_path) + ".old"))
+            return files
         else:
-            return
+            files = file.read()
+            return files
 
     with file_path.open("w") as file:
         file.write(str(datetime.now().date()))
