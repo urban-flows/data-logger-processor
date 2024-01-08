@@ -64,13 +64,11 @@ def check_create_lock_file(file_path: Path):
         open(file_path, 'w').close()  # Create lock file and close, similar to touch in unix.
 
 if __name__ == "__main__":
-    print(checked_files_path)
-    files_processed = check_tracking_file(Path(checked_files_path))
+    files_processed = check_tracking_file(checked_files_path)
     files_not_processed = get_today_files_not_processed(files_processed)
-    set_files_processed(Path(checked_files_path), files_not_processed)
-    # today_input_directory = Path(root_path) / str(today).replace("-", r"/")
-    # paths = glob.glob(str(today_input_directory / "*"))
-    # for path in paths:
-    #     processor = station_data_processor.StationDataProcessor(path)
-    #     processor.process_file()
-
+    set_files_processed(checked_files_path, files_not_processed)
+    check_create_lock_file(lock_file_path)
+    for path in files_not_processed:
+        processor = station_data_processor.StationDataProcessor(path)
+        processor.process_file()
+    lock_file_path.unlink()
