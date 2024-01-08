@@ -33,7 +33,7 @@ def check_tracking_file(file_path: Path):
     files = []
     if file_path.is_file():
         with file_path.open("r") as file:
-            date = file.readline()
+            date = file.readline().rstrip("\n")
             try:
                 date = datetime.strptime(date, date_format).date()
             except ValueError:
@@ -47,7 +47,7 @@ def check_tracking_file(file_path: Path):
                 return files
 
     with file_path.open("w") as file:
-        file.write(str(datetime.now().date()))
+        file.write(str(datetime.now().date()) + "\n")
 
 
 def set_files_processed(file_path: Path, processed_files: list[str]):
