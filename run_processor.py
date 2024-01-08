@@ -1,12 +1,14 @@
 import glob
+import sys
 import os
 from pathlib import Path
 from processor import station_data_processor
 from datetime import datetime
-root_path = os.getenv("DATA_ROOT_PATH")
-text_file_path = os.getenv("FILES_EDITED_PATH")
+root_path = Path(os.getenv("DATA_ROOT_PATH"))
+text_file_path = Path(os.getenv("FILES_EDITED_PATH"))
 today = "2021-08-17"
-checked_files_path = os.getenv("FILES_CHECKED_PATH")
+checked_files_path = Path(os.getenv("FILES_CHECKED_PATH"))
+lock_file_path = Path(os.getenv("LOCK_FILE_PATH"))
 
 
 def get_today_files_not_processed(files_processed: list[str]):
@@ -53,6 +55,13 @@ def set_files_processed(file_path: Path, processed_files: list[str]):
         for processed_file in processed_files:
             file.write(processed_file + "\n")
 
+
+def check_create_lock_file(file_path: Path):
+    if file_path.exists():
+        print("Lock file already exists, program will exit")
+        sys.exit()
+    else:
+        open(file_path, 'w').close()  # Create lock file and close, similar to touch in unix.
 
 if __name__ == "__main__":
     print(checked_files_path)
