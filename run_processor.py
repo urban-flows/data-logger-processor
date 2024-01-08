@@ -1,6 +1,7 @@
 import glob
 import sys
 import os
+
 from pathlib import Path
 from processor import station_data_processor
 from datetime import datetime
@@ -62,6 +63,7 @@ def check_create_lock_file(file_path: Path):
         sys.exit()
     else:
         open(file_path, 'w').close()  # Create lock file and close, similar to touch in unix.
+
 
 if __name__ == "__main__":
     files_processed = check_tracking_file(checked_files_path)
