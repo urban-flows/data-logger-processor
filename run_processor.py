@@ -19,7 +19,10 @@ def get_today_files_not_processed(files_processed: list[str]):
     #         files_processed.append(line_stripped)
     #
     files_all = glob.glob(str(today_input_directory / "*"))
-    files_not_processed = set(files_all) - set(files_processed)
+    if files_processed:
+        files_not_processed = set(files_all) - set(files_processed)
+    else:
+        files_not_processed = set(files_all)
     return list(files_not_processed)
 
 
@@ -52,6 +55,7 @@ def set_files_processed(file_path: Path, processed_files: list[str]):
 
 
 if __name__ == "__main__":
+    print(checked_files_path)
     files_processed = check_tracking_file(Path(checked_files_path))
     files_not_processed = get_today_files_not_processed(files_processed)
     set_files_processed(Path(checked_files_path), files_not_processed)
